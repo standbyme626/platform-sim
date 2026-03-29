@@ -510,3 +510,107 @@ async def inject_error(
         retryable=error_info.get("retryable", False),
         artifact_id=str(artifact.id),
     )
+
+
+class ReportStep(BaseModel):
+    step_no: int
+    event_type: str
+    timestamp: Optional[str] = None
+
+
+class ReportArtifact(BaseModel):
+    artifact_id: str
+    artifact_type: str
+    route_key: Optional[str] = None
+
+
+class ReportError(BaseModel):
+    error_code: str
+    http_status: int
+    message: str
+    injected_at_step: int
+
+
+class ReportResponse(BaseModel):
+    run_id: str
+    platform: str
+    status: str
+    total_steps: int
+    total_artifacts: int
+    total_pushes: int
+    total_errors: int
+    scenario_name: Optional[str] = None
+    steps: List[ReportStep]
+    artifacts: List[ReportArtifact]
+    errors: List[ReportError]
+    open_issues: List[str] = []
+
+
+@router.get("/{run_id}/report", response_model=ReportResponse)
+async def get_run_report(
+    run_id: UUID,
+    db: Session = Depends(get_db),
+):
+    run_repo = RunRepository(db)
+    event_repo = EventRepository(db)
+    artifact_repo = ArtifactRepository(db)
+    push_repo = PushEventRepository(db)
+
+    run = run_repo.get_by_id(run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail="Run not found")
+
+    events = event_repo.list_by_run(run_id)
+    artifacts = artifact_repo.list_by_run(run_id)
+    pushes = push_repo.list_by_run(run_id)
+
+    error_artifacts = [a for a in artifacts if a.artifact_type.value == "error_response_payload"]
+
+    steps = [
+        ReportStep(
+            step_no=e.step_no,
+            event_type=e.event_type,
+            timestamp=e.created_at.isoformat() if e.created_at else None,
+        )
+        for e in events
+    ]
+
+    report_artifacts = [
+        ReportArtifact(
+            artifact_id=str(a.id),
+            artifact_type=a.artifact_type.value,
+            route_key=a.route_key,
+        )
+        for a in artifacts
+    ]
+
+    errors = [
+        ReportError(
+            error_code=a.response_body_json.get("error", "unknown"),
+            http_status=a.response_body_json.get("http_status", 0),
+            message=a.response_body_json.get("message", ""),
+            injected_at_step=a.step_no,
+        )
+        for a in error_artifacts
+    ]
+
+    open_issues = []
+    if run.status == RunStatus.FAILED:
+        open_issues.append("Run ended in FAILED status")
+    if not events:
+        open_issues.append("No events recorded in this run")
+
+    return ReportResponse(
+        run_id=str(run.id),
+        platform=run.platform,
+        status=run.status.value,
+        total_steps=len(events),
+        total_artifacts=len(artifacts),
+        total_pushes=len(pushes),
+        total_errors=len(errors),
+        scenario_name=run.metadata_json.get("scenario_name") if run.metadata_json else None,
+        steps=steps,
+        artifacts=report_artifacts,
+        errors=errors,
+        open_issues=open_issues,
+    )

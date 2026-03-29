@@ -273,8 +273,9 @@ All P0 milestones completed:
 - ✅ M6: Douyin Shop P0 Profile
 - ✅ M7: Wecom KF P0 Profile
 - ✅ M8: Integration
+- ✅ M9: 错误注入与评估报告
 
-**总测试数**: 55 passed
+**总测试数**: 61 passed
 ## M10: README 与验收
 
 - **状态**: todo
