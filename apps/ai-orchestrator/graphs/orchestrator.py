@@ -1,9 +1,13 @@
 from langgraph.graph import StateGraph, END
 from typing import Dict, Any
 
-from ..nodes.state import OrchestratorState
-from ..nodes.base import create_initial_state, start_node, error_node, end_node
-from ..nodes.suggestion import get_suggestion_node, rule_check_node
+import sys
+import os
+sys.path.insert(0, os.path.dirname(__file__))
+
+from nodes.state import OrchestratorState
+from nodes.base import create_initial_state, start_node, error_node, end_node
+from nodes.suggestion import get_suggestion_node, rule_check_node
 
 
 def build_orchestrator_graph() -> StateGraph:
