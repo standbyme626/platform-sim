@@ -59,3 +59,17 @@
 - **原因**: 便于扩展和维护，符合 FastAPI 最佳实践
 - **影响**: 路由分散在 routes/ 目录，通过 router.py 统一挂载
 - **后续动作**: 后续新增平台路由只需在 routes/ 下创建文件并在 router.py 注册
+
+---
+
+### DEC-004
+- **日期**: 2026-03-29
+- **主题**: M2 数据库选型 - SQLite vs PostgreSQL
+- **背景**: 本地开发环境没有运行 PostgreSQL
+- **备选方案**:
+  1. 使用 PostgreSQL（需要本地启动服务）
+  2. 使用 SQLite（无需额外服务，便于快速开发）
+- **决策**: 采用方案2，SQLite
+- **原因**: 本地无 PostgreSQL 服务，SQLite 可满足 M2-M5 开发需求
+- **影响**: official-sim-server/official_sim.db 作为本地数据库文件
+- **后续动作**: 生产环境应切换为 PostgreSQL

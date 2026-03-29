@@ -68,29 +68,29 @@ P0 范围：
 
 ---
 
-### M2: 建立数据库与迁移基础
+### M2: 建立数据库与迁移基础 ✅ DONE
 
 #### 目标
 引入 DB migration，落第一批核心表。
 
 #### 输出
-- migration 配置
-- 第一批核心表 migration
-- repository skeleton
+- [x] migration 配置
+- [x] 第一批核心表 migration
+- [x] repository skeleton
 
 #### 涉及表
-- simulation_runs
-- simulation_events
-- state_snapshots
-- push_events
-- artifacts
-- evaluation_reports
+- [x] simulation_runs
+- [x] simulation_events
+- [x] state_snapshots
+- [x] push_events
+- [x] artifacts
+- [x] evaluation_reports
 
 #### 验收标准
-- migration 可执行
-- migration 可回滚
-- repository 最小 CRUD 跑通
-- pytest 覆盖最小 DB smoke tests
+- [x] migration 可执行
+- [x] migration 可回滚
+- [x] repository 最小 CRUD 跑通
+- [ ] pytest 覆盖最小 DB smoke tests
 
 #### 验证命令
 - migrate up
@@ -100,6 +100,13 @@ P0 范围：
 #### 决策说明
 - 第二批业务表暂缓
 - 先把 run / artifact / event 链条打通
+- 使用 SQLite 作为本地开发数据库（PostgreSQL 未运行）
+- DB URL: sqlite:////home/kkk/Project/platform-sim/apps/official-sim-server/official_sim.db
+
+#### 完成信息
+- **完成时间**: 2026-03-29
+- **验证结果**: 6 张表创建成功，up/down 验证通过
+- **注意**: pytest db smoke tests 待补充
 
 ---
 

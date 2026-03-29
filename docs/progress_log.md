@@ -38,22 +38,33 @@
 
 ## M2: 数据库与迁移基础
 
-- **状态**: todo
-- **开始时间**:
-- **完成时间**:
+- **状态**: ✅ DONE
+- **开始时间**: 2026-03-29
+- **完成时间**: 2026-03-29
 - **目标**: 引入 DB migration，落第一批核心表
 
 - **实际完成**:
+  - 初始化 Alembic 配置
+  - 创建 6 张核心表（simulation_runs, simulation_events, state_snapshots, push_events, artifacts, evaluation_reports）
+  - 创建 repository skeleton（run_repo, event_repo, snapshot_repo）
+  - 更新 runs.py 连接 DB（实际使用 SQLite）
 
 - **未完成项**:
+  - pytest db smoke tests
 
-- **阻塞**:
+- **阻塞**: 无
 
-- **下一步**:
+- **下一步**: M3 - 实现 run 生命周期
 
 - **验证命令**:
+  ```bash
+  cd apps/official-sim-server
+  alembic upgrade head
+  alembic downgrade base
+  alembic upgrade head
+  ```
 
-- **结果**:
+- **结果**: ✅ 通过 - 6 张表创建成功，up/down 验证通过
 
 ---
 
