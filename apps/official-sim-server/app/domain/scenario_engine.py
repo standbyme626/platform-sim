@@ -21,11 +21,21 @@ from app.platforms.douyin_shop.profile import (
     get_default_refund_payload as douyin_refund_payload,
     get_default_push_payload as douyin_push_payload,
 )
+from app.platforms.wecom_kf.profile import (
+    WecomConversationStatus,
+    WecomMessageType,
+    CONVERSATION_SCENARIOS as WECOM_SCENARIOS,
+    get_default_callback_payload,
+    get_default_sync_msg_payload,
+    get_default_send_msg_payload,
+    get_default_event_message_payload,
+)
 
 
 PLATFORM_SCENARIOS = {
     "taobao": TAOBAO_SCENARIOS,
     "douyin_shop": DOUYIN_SCENARIOS,
+    "wecom_kf": WECOM_SCENARIOS,
 }
 
 PLATFORM_ORDER_PAYLOAD = {
@@ -90,6 +100,11 @@ class ScenarioEngine:
                 run_id, current_step, action_name, next_status,
                 order_id, artifacts, pushes
             )
+        elif platform == "wecom_kf":
+            self._handle_wecom_step(
+                run_id, current_step, action_name, next_status,
+                order_id, artifacts, pushes
+            )
 
         return {
             "action": action_name,
@@ -105,6 +120,8 @@ class ScenarioEngine:
             return f"TB{run_id.hex[:12].upper()}"
         elif platform == "douyin_shop":
             return f"DY{run_id.hex[:12].upper()}"
+        elif platform == "wecom_kf":
+            return f"o{run_id.hex[:20].upper()}"
         return f"{platform.upper()}{run_id.hex[:12].upper()}"
 
     def _handle_taobao_step(
@@ -223,6 +240,47 @@ class ScenarioEngine:
             push_payload = douyin_push_payload("refund.RefundSuccess", order_id)
             push = self._create_push_event(run_id, step_no, "douyin_shop", push_payload)
             pushes.append(push)
+
+    def _handle_wecom_step(
+        self,
+        run_id: UUID,
+        step_no: int,
+        action_name: str,
+        next_status,
+        open_id: str,
+        artifacts: List,
+        pushes: List,
+    ):
+        if action_name == "start_session":
+            callback_payload = get_default_callback_payload(open_id, f"CODE_{open_id}")
+            artifact = self._create_order_artifact(
+                run_id, step_no, "wecom_kf", callback_payload,
+                "/wecom/kf/callback", "callback.enter_session"
+            )
+            artifacts.append(artifact)
+
+            sync_payload = get_default_sync_msg_payload(open_id)
+            sync_artifact = self._create_order_artifact(
+                run_id, step_no, "wecom_kf", sync_payload,
+                "/wecom/kf/sync_msg", "sync_msg"
+            )
+            artifacts.append(sync_artifact)
+
+        elif action_name == "close_session":
+            event_payload = get_default_event_message_payload(open_id, "session_close")
+            artifact = self._create_order_artifact(
+                run_id, step_no, "wecom_kf", event_payload,
+                "/wecom/kf/event", "event.session_close"
+            )
+            artifacts.append(artifact)
+
+        elif action_name == "expire_session":
+            event_payload = get_default_event_message_payload(open_id, "session_close")
+            artifact = self._create_order_artifact(
+                run_id, step_no, "wecom_kf", event_payload,
+                "/wecom/kf/event", "event.session_close"
+            )
+            artifacts.append(artifact)
 
     def _create_order_artifact(
         self,

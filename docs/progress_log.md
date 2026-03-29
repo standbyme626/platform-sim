@@ -201,22 +201,32 @@
 
 ## M7: Wecom KF P0 Profile
 
-- **状态**: todo
-- **开始时间**:
-- **完成时间**:
+- **状态**: ✅ DONE
+- **开始时间**: 2026-03-29
+- **完成时间**: 2026-03-29
 - **目标**: 实现企微客服 P0 平台 profile
 
 - **实际完成**:
+  - 实现 `app/platforms/wecom_kf/profile.py` - 企微会话状态机和场景定义
+  - 支持场景: basic_session, full_session, session_expired
+  - 实现 callback/sync_msg/event 工件生成
+  - 更新 scenario_engine 支持企微平台
+  - 创建 9 个企微测试用例
+  - 49 个 pytest 测试全部通过
 
-- **未完成项**:
+- **未完成项**: 无
 
-- **阻塞**:
+- **阻塞**: 无
 
-- **下一步**:
+- **下一步**: M8 - Integration
 
 - **验证命令**:
+  ```bash
+  cd apps/official-sim-server
+  python -m pytest tests/test_wecom_kf.py -v
+  ```
 
-- **结果**:
+- **结果**: ✅ 49 passed
 
 ---
 

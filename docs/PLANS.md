@@ -249,7 +249,7 @@ P0 范围：
 
 ---
 
-### M7: 实现 wecom_kf P0 profile
+### M7: 实现 wecom_kf P0 profile ✅ DONE
 
 #### 目标
 实现企微客服 P0 平台 profile。
