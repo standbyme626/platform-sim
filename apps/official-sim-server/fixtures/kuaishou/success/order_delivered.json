@@ -1,0 +1,25 @@
+{
+  "platform": "kuaishou",
+  "fixture_type": "order",
+  "scenario_key": "order_delivered",
+  "description": "快手订单已发货状态",
+  "initial_state": {
+    "order_status": "delivered"
+  },
+  "expected_artifacts": [
+    {
+      "artifact_type": "order_detail",
+      "step": 0,
+      "description": "已发货订单详情"
+    },
+    {
+      "artifact_type": "logistics_snapshot",
+      "step": 0,
+      "description": "物流快照"
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created_at": "2026-03-29"
+  }
+}

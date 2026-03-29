@@ -380,9 +380,13 @@ P1 已完成以下平台：
 - jd ✅
 - xhs ✅
 
+P2 已完成以下平台：
+
+- kuaishou ✅
+
 以下平台只允许建立占位 profile / skeleton，不做完整实现：
 
-- kuaishou
+- 无
 
 ---
 
