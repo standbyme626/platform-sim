@@ -384,6 +384,15 @@ P2 已完成以下平台：
 
 - kuaishou ✅
 
+## 4. Providers 层 (P3)
+
+### 4.1 已完成
+- providers/base/provider.py (BaseProvider, ProviderMode) ✅
+- providers/taobao/provider.py (mock/real 切换) ✅
+- providers/douyin_shop/provider.py (签名校验) ✅
+- providers/wecom_kf/provider.py (会话/消息) ✅
+- providers/tests/ (9 passed) ✅
+
 以下平台只允许建立占位 profile / skeleton，不做完整实现：
 
 - 无
