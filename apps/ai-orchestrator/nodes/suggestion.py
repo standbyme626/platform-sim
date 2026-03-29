@@ -1,5 +1,12 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from .state import OrchestratorState, AgentStatus
+
+try:
+    from services.llm_service import LLMService
+    LLM_AVAILABLE = True
+except ImportError:
+    LLM_AVAILABLE = False
+    LLMService = None
 
 
 ORDER_STATUS_SUGGESTIONS: Dict[str, Dict[str, List[str]]] = {
@@ -70,16 +77,29 @@ SUGGESTION_RULES = {
 }
 
 
-def get_suggestion_node(state: OrchestratorState) -> OrchestratorState:
+def get_suggestion_node(state: OrchestratorState, use_llm: bool = True) -> OrchestratorState:
     order_status = state.unified_order.get("status", "") if state.unified_order else ""
     platform = state.current_platform or ""
+    user_message = state.unified_order.get("user_message", "") if state.unified_order else ""
 
     suggestions = []
 
-    if platform in ORDER_STATUS_SUGGESTIONS:
-        platform_suggestions = ORDER_STATUS_SUGGESTIONS[platform]
-        if order_status in platform_suggestions:
-            suggestions = platform_suggestions[order_status]
+    if use_llm and LLM_AVAILABLE and user_message:
+        try:
+            llm = LLMService()
+            suggestions = llm.generate_suggestions(
+                order_status=order_status,
+                platform=platform,
+                user_message=user_message,
+            )
+            state.messages.append({
+                "role": "assistant",
+                "content": f"LLM Suggestions: {suggestions}"
+            })
+        except Exception:
+            suggestions = _get_rule_based_suggestions(platform, order_status)
+    else:
+        suggestions = _get_rule_based_suggestions(platform, order_status)
 
     if not suggestions:
         suggestions = [
@@ -89,22 +109,30 @@ def get_suggestion_node(state: OrchestratorState) -> OrchestratorState:
 
     state.suggestions = suggestions
     state.next_node = "rule_check"
-    state.messages.append({
-        "role": "assistant",
-        "content": f"Suggestions generated: {suggestions}"
-    })
     return state
 
 
-def rule_check_node(state: OrchestratorState) -> OrchestratorState:
+def _get_rule_based_suggestions(platform: str, order_status: str) -> List[str]:
+    if platform in ORDER_STATUS_SUGGESTIONS:
+        platform_suggestions = ORDER_STATUS_SUGGESTIONS[platform]
+        if order_status in platform_suggestions:
+            return platform_suggestions[order_status]
+    return []
+
+
+def rule_check_node(state: OrchestratorState, use_llm: bool = True) -> OrchestratorState:
     user_message = state.unified_order.get("user_message", "") if state.unified_order else ""
 
     action = "general_inquiry"
-    keywords = {k: v for k, v in SUGGESTION_RULES.items() if k in ["退款", "退款申请", "物流", "取消订单"]}
-    for keyword, rule_action in keywords.items():
-        if keyword in user_message:
-            action = rule_action
-            break
+
+    if use_llm and LLM_AVAILABLE and user_message:
+        try:
+            llm = LLMService()
+            action = llm.classify_intent(user_message)
+        except Exception:
+            action = _rule_based_classify(user_message)
+    else:
+        action = _rule_based_classify(user_message)
 
     state.selected_action = action
     state.messages.append({
@@ -113,3 +141,11 @@ def rule_check_node(state: OrchestratorState) -> OrchestratorState:
     })
     state.next_node = "end"
     return state
+
+
+def _rule_based_classify(user_message: str) -> str:
+    keywords = {k: v for k, v in SUGGESTION_RULES.items() if k in ["退款", "退款申请", "物流", "取消订单"]}
+    for keyword, rule_action in keywords.items():
+        if keyword in user_message:
+            return rule_action
+    return "general_inquiry"

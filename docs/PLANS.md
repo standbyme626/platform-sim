@@ -403,7 +403,11 @@ P2 已完成以下平台：
 - apps/ai-orchestrator/nodes/base.py (start_node, error_node, end_node) ✅
 - apps/ai-orchestrator/nodes/suggestion.py (get_suggestion_node, rule_check_node) ✅
 - apps/ai-orchestrator/graphs/orchestrator.py (LangGraph StateGraph) ✅
-- apps/ai-orchestrator/tests/ (9 passed) ✅
+- apps/ai-orchestrator/services/llm_service.py (LLMService with 阿里百炼) ✅
+- apps/ai-orchestrator/services/llm_config.py (LLMConfig 配置) ✅
+- apps/ai-orchestrator/tests/ (18 passed) ✅
+  - test_orchestrator.py (9 tests)
+  - test_llm_service.py (9 tests)
 
 ## 6. Domain Service 层 (P3)
 
