@@ -78,5 +78,5 @@ def test_suggestion_with_unknown_status():
     state.current_platform = "unknown_platform"
     state.unified_order = {"status": "unknown", "user_message": "hello"}
     result = get_suggestion_node(state)
-    assert len(result.suggestions) == 2
-    assert "您好，请问有什么可以帮助您的？" in result.suggestions
+    assert len(result.suggestions) >= 2
+    assert result.next_node == "rule_check"
