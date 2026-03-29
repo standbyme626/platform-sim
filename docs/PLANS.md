@@ -33,24 +33,24 @@ P0 范围：
 
 ## 2. Milestone 列表
 
-### M1: 建立 official-sim-server 工程骨架
+### M1: 建立 official-sim-server 工程骨架 ✅ DONE
 
 #### 目标
 创建新应用目录与最小可启动 FastAPI 服务。
 
 #### 输出
-- `apps/official-sim-server/`
-- `app/main.py`
-- `app/api/router.py`
-- `app/api/routes/runs.py`
-- `app/core/*`
-- `README.md`
+- [x] `apps/official-sim-server/`
+- [x] `app/main.py`
+- [x] `app/api/router.py`
+- [x] `app/api/routes/runs.py`
+- [x] `app/core/*`
+- [x] `README.md`
 
 #### 验收标准
-- 服务可启动
-- `/healthz` 或等价健康检查可返回成功
-- `POST /official-sim/runs` 有最小 stub
-- 项目基础测试框架可运行
+- [x] 服务可启动
+- [x] `/healthz` 或等价健康检查可返回成功
+- [x] `POST /official-sim/runs` 有最小 stub
+- [x] 项目基础测试框架可运行
 
 #### 验证命令
 - 启动应用命令
@@ -60,6 +60,11 @@ P0 范围：
 #### 决策说明
 - 先不接数据库，只保留内存 / stub 版本也可
 - 路由和 service 分层必须到位
+
+#### 完成信息
+- **完成时间**: 2026-03-29
+- **Commit**: d42bc0c
+- **验证结果**: 服务可启动，healthz 返回正常
 
 ---
 
