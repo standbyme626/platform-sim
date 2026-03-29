@@ -144,7 +144,7 @@ P0 范围：
 
 ---
 
-### M4: 实现 artifacts / snapshots / push events
+### M4: 实现 artifacts / snapshots / push events ✅ DONE
 
 #### 目标
 让 run 能产出"平台侧工件"。

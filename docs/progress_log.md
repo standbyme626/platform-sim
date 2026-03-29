@@ -103,22 +103,35 @@
 
 ## M4: Artifacts / Snapshots / Push Events
 
-- **状态**: todo
-- **开始时间**:
-- **完成时间**:
+- **状态**: ✅ DONE
+- **开始时间**: 2026-03-29
+- **完成时间**: 2026-03-29
 - **目标**: 让 run 能产出"平台侧工件"
 
 - **实际完成**:
+  - 实现 ArtifactRepository 和 ArtifactBuilder
+  - 实现 PushEventRepository 和 PushDispatcher
+  - 实现 `GET /official-sim/runs/{run_id}/artifacts` 端点
+  - 实现 `GET /official-sim/runs/{run_id}/pushes` 端点
+  - 实现 `POST /official-sim/runs/{run_id}/replay-push` 端点
+  - 实现 `POST /official-sim/runs/{run_id}/inject-error` 端点
+  - advance 时自动创建 api_response_snapshot artifact
+  - 实现 12 种错误码注入（token_expired, invalid_signature, rate_limited 等）
+  - 创建完整 pytest 测试（23 个测试用例全部通过）
 
-- **未完成项**:
+- **未完成项**: 无
 
-- **阻塞**:
+- **阻塞**: 无
 
-- **下一步**:
+- **下一步**: M5 - 实现 taobao P0 profile
 
 - **验证命令**:
+  ```bash
+  cd apps/official-sim-server
+  python -m pytest tests/ -v
+  ```
 
-- **结果**:
+- **结果**: ✅ 23 passed
 
 ---
 
