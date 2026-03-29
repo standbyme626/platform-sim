@@ -277,5 +277,7 @@ All P0 milestones completed:
 - ✅ M10: README / 示例 / 交付清理
 - ✅ P0 审计补充: Fixtures 目录 (24 JSON 文件)
 - ✅ P0 审计补充: Fixture consistency 测试 (114 passed)
+- ✅ P1: jd profile 骨架 (8 fixtures + tests)
+- ✅ P1: xhs profile 骨架 (7 fixtures + tests)
 
-**P0 完成！总测试数: 175 passed (包含 fixture tests)**
+**P0+P1 完成！总测试数: 248 passed**

@@ -369,16 +369,19 @@ P0 范围：
 
 ## 3. P0 平台范围声明
 
-P0 仅对以下平台做可运行 profile：
+P0 已完成以下平台：
 
-- taobao
-- douyin_shop
-- wecom_kf
+- taobao ✅
+- douyin_shop ✅
+- wecom_kf ✅
+
+P1 已完成以下平台：
+
+- jd ✅
+- xhs ✅
 
 以下平台只允许建立占位 profile / skeleton，不做完整实现：
 
-- jd
-- xhs
 - kuaishou
 
 ---
