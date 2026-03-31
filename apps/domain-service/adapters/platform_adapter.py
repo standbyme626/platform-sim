@@ -170,3 +170,215 @@ class WecomKfAdapter:
             created_at=datetime.fromisoformat(platform_data.get("created_at", datetime.now().isoformat())),
             updated_at=datetime.fromisoformat(platform_data.get("updated_at", datetime.now().isoformat())),
         )
+
+
+class JDAdapter:
+    @staticmethod
+    def to_unified_order(platform_data: Dict[str, Any]) -> UnifiedOrder:
+        receiver_info = platform_data.get("receiver", {})
+        
+        receiver = UnifiedAddress(
+            name=receiver_info.get("name", ""),
+            phone=receiver_info.get("phone", ""),
+            address=receiver_info.get("address", ""),
+        )
+        
+        items = platform_data.get("items", [])
+        products = [
+            UnifiedProduct(
+                product_id=item.get("item_id", ""),
+                name=item.get("name", ""),
+                price=item.get("price", "0"),
+                quantity=item.get("quantity", 1),
+            )
+            for item in items
+        ]
+        
+        status_map = {
+            "wait_seller_delivery": OrderStatus.WAIT_SHIP,
+            "wait_buyer_confirm": OrderStatus.SHIPPED,
+            "finished": OrderStatus.FINISHED,
+            "cancelled": OrderStatus.TRADE_CLOSED,
+        }
+        
+        created_at_str = platform_data.get("create_time", datetime.now().isoformat())
+        updated_at_str = platform_data.get("update_time", datetime.now().isoformat())
+        
+        return UnifiedOrder(
+            order_id=platform_data.get("order_id", ""),
+            platform=Platform.JD,
+            status=status_map.get(platform_data.get("status", ""), OrderStatus.WAIT_PAY),
+            total_amount=platform_data.get("total_amount", "0"),
+            pay_amount=platform_data.get("pay_amount", "0"),
+            freight=platform_data.get("freight", "0"),
+            receiver=receiver,
+            products=products,
+            created_at=datetime.fromisoformat(created_at_str.replace(" ", "T")) if " " in created_at_str else datetime.fromisoformat(created_at_str),
+            updated_at=datetime.fromisoformat(updated_at_str.replace(" ", "T")) if " " in updated_at_str else datetime.fromisoformat(updated_at_str),
+        )
+    
+    @staticmethod
+    def from_unified_order(unified: UnifiedOrder) -> Dict[str, Any]:
+        return {
+            "order_id": unified.order_id,
+            "status": unified.status.value,
+            "total_amount": unified.total_amount,
+            "pay_amount": unified.pay_amount,
+            "freight": unified.freight,
+            "receiver": {
+                "name": unified.receiver.name,
+                "phone": unified.receiver.phone,
+                "address": unified.receiver.address,
+            },
+            "items": [
+                {
+                    "item_id": p.product_id,
+                    "name": p.name,
+                    "price": p.price,
+                    "quantity": p.quantity,
+                }
+                for p in unified.products
+            ],
+        }
+
+
+class XhsAdapter:
+    @staticmethod
+    def to_unified_order(platform_data: Dict[str, Any]) -> UnifiedOrder:
+        receiver_info = platform_data.get("receiver", {})
+        
+        receiver = UnifiedAddress(
+            name=receiver_info.get("name", ""),
+            phone=receiver_info.get("phone", ""),
+            address=receiver_info.get("address", ""),
+        )
+        
+        items = platform_data.get("items", [])
+        products = [
+            UnifiedProduct(
+                product_id=item.get("item_id", ""),
+                name=item.get("name", ""),
+                price=item.get("price", "0"),
+                quantity=item.get("quantity", 1),
+            )
+            for item in items
+        ]
+        
+        status_map = {
+            "pending": OrderStatus.WAIT_PAY,
+            "paid": OrderStatus.PAID,
+            "delivering": OrderStatus.IN_TRANSIT,
+            "delivered": OrderStatus.FINISHED,
+            "cancelled": OrderStatus.TRADE_CLOSED,
+        }
+        
+        created_at_str = platform_data.get("create_time", datetime.now().isoformat())
+        updated_at_str = platform_data.get("update_time", datetime.now().isoformat())
+        
+        return UnifiedOrder(
+            order_id=platform_data.get("order_id", ""),
+            platform=Platform.XHS,
+            status=status_map.get(platform_data.get("status", ""), OrderStatus.WAIT_PAY),
+            total_amount=platform_data.get("total_amount", "0"),
+            pay_amount=platform_data.get("pay_amount", "0"),
+            freight=platform_data.get("freight", "0"),
+            receiver=receiver,
+            products=products,
+            created_at=datetime.fromisoformat(created_at_str.replace(" ", "T")) if " " in created_at_str else datetime.fromisoformat(created_at_str),
+            updated_at=datetime.fromisoformat(updated_at_str.replace(" ", "T")) if " " in updated_at_str else datetime.fromisoformat(updated_at_str),
+        )
+    
+    @staticmethod
+    def from_unified_order(unified: UnifiedOrder) -> Dict[str, Any]:
+        return {
+            "order_id": unified.order_id,
+            "status": unified.status.value,
+            "total_amount": unified.total_amount,
+            "pay_amount": unified.pay_amount,
+            "freight": unified.freight,
+            "receiver": {
+                "name": unified.receiver.name,
+                "phone": unified.receiver.phone,
+                "address": unified.receiver.address,
+            },
+            "items": [
+                {
+                    "item_id": p.product_id,
+                    "name": p.name,
+                    "price": p.price,
+                    "quantity": p.quantity,
+                }
+                for p in unified.products
+            ],
+        }
+
+
+class KuaishouAdapter:
+    @staticmethod
+    def to_unified_order(platform_data: Dict[str, Any]) -> UnifiedOrder:
+        receiver_info = platform_data.get("receiver", {})
+        
+        receiver = UnifiedAddress(
+            name=receiver_info.get("name", ""),
+            phone=receiver_info.get("phone", ""),
+            address=receiver_info.get("address", ""),
+        )
+        
+        products_data = platform_data.get("products", [])
+        products = [
+            UnifiedProduct(
+                product_id=p.get("product_id", ""),
+                name=p.get("name", ""),
+                price=p.get("price", "0"),
+                quantity=p.get("quantity", 1),
+            )
+            for p in products_data
+        ]
+        
+        status_map = {
+            "pending": OrderStatus.WAIT_PAY,
+            "paid": OrderStatus.PAID,
+            "delivering": OrderStatus.IN_TRANSIT,
+            "delivered": OrderStatus.FINISHED,
+            "cancelled": OrderStatus.TRADE_CLOSED,
+        }
+        
+        created_at_str = platform_data.get("create_time", datetime.now().isoformat())
+        updated_at_str = platform_data.get("update_time", datetime.now().isoformat())
+        
+        return UnifiedOrder(
+            order_id=platform_data.get("order_id", ""),
+            platform=Platform.KUAISHOU,
+            status=status_map.get(platform_data.get("status", ""), OrderStatus.WAIT_PAY),
+            total_amount=platform_data.get("total_amount", "0"),
+            pay_amount=platform_data.get("pay_amount", "0"),
+            freight=platform_data.get("freight", "0"),
+            receiver=receiver,
+            products=products,
+            created_at=datetime.fromisoformat(created_at_str.replace(" ", "T")) if " " in created_at_str else datetime.fromisoformat(created_at_str),
+            updated_at=datetime.fromisoformat(updated_at_str.replace(" ", "T")) if " " in updated_at_str else datetime.fromisoformat(updated_at_str),
+        )
+    
+    @staticmethod
+    def from_unified_order(unified: UnifiedOrder) -> Dict[str, Any]:
+        return {
+            "order_id": unified.order_id,
+            "status": unified.status.value,
+            "total_amount": unified.total_amount,
+            "pay_amount": unified.pay_amount,
+            "freight": unified.freight,
+            "receiver": {
+                "name": unified.receiver.name,
+                "phone": unified.receiver.phone,
+                "address": unified.receiver.address,
+            },
+            "products": [
+                {
+                    "product_id": p.product_id,
+                    "name": p.name,
+                    "price": p.price,
+                    "quantity": p.quantity,
+                }
+                for p in unified.products
+            ],
+        }
