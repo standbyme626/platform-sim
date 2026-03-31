@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+*.log
+.env
+.env.local
+apps/agent-console/node_modules
+apps/admin-console/node_modules
+apps/agent-console/.next
+apps/admin-console/.next

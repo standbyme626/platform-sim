@@ -1,0 +1,48 @@
+import Link from "next/link";
+
+const menuItems = [
+  { href: "/platforms", label: "平台配置", description: "管理平台账户和 Provider 模式" },
+  { href: "/knowledge", label: "知识库管理", description: "管理知识库文档和索引" },
+  { href: "/audit", label: "审计日志", description: "查看系统操作日志" },
+  { href: "/operations", label: "运营活动", description: "查看运营活动列表" },
+  { href: "/analytics", label: "数据概览", description: "查看数据统计摘要" },
+  { href: "/quality/rules", label: "质检规则", description: "管理质检规则" },
+  { href: "/quality/results", label: "质检结果", description: "查看质检结果列表" },
+  { href: "/quality/alerts", label: "质检告警", description: "查看质检告警列表" },
+  { href: "/risk/cases", label: "风险事件", description: "查看风险事件列表" },
+  { href: "/risk/blacklist", label: "黑名单客户", description: "查看黑名单客户列表" },
+  { href: "/integration/inventory", label: "库存快照", description: "查看库存快照列表" },
+  { href: "/integration/order-audits", label: "订单审核", description: "查看订单审核状态" },
+  { href: "/integration/order-exceptions", label: "异常订单", description: "查看异常订单列表" },
+  { href: "/management/voc-topics", label: "VOC 主题", description: "查看客户声音主题列表" },
+  { href: "/management/training-cases", label: "培训案例", description: "查看培训案例列表" },
+  { href: "/management/training-tasks", label: "训练任务", description: "查看训练任务列表" },
+  { href: "/management/dashboard-snapshots", label: "管理看板", description: "查看管理看板快照" },
+];
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto py-4 px-4">
+          <h1 className="text-xl font-bold">管理后台</h1>
+        </div>
+      </header>
+      <main className="max-w-7xl mx-auto py-6 px-4">
+        <h2 className="text-lg font-medium mb-4">功能入口</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {menuItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+            >
+              <h3 className="text-lg font-medium text-blue-600">{item.label}</h3>
+              <p className="mt-1 text-sm text-gray-500">{item.description}</p>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
